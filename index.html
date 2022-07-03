@@ -1,0 +1,218 @@
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TP7 Simulación</title>
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.css"/>
+    <div id="app"></div>
+  </head>
+
+  <body>
+    <h1 class="text-center">Trabajo Práctico N°7 de Simulación: Zapatería</h1>
+
+    <hr>
+
+    <div class="container">
+      <form>
+        <h2>Parámetros:</h2>
+
+        <div class="form-group row my-3">
+          <label class="col-md-auto col-form-label" for="txtCantEventos">Cantidad de eventos</label>
+          <div class="col-md-auto">
+            <input type="number" class="form-control" id="txtCantEventos" name="txtCantEventos"/>
+          </div>
+          
+          <label class="col-md-auto col-form-label" for="txtEventoDesde">Evento desde</label>
+          <div class="col-md-auto">
+            <input type="number" class="form-control" id="txtEventoDesde" name="txtEventoDesde"/>
+          </div>
+        </div>
+        <hr>
+        <div class="form-group row my-3">
+          <label class="col-md-auto col-form-label" for="txtProbRetiro">Probabilidad de que se retiren zapatos</label>
+          <div class="col-md-auto">
+            <input type="number" class="form-control" id="txtProbRetiro" name="txtProbRetiro" value="0.5"/>
+          </div>
+          
+          <label class="col-md-auto col-form-label" for="txtProbPedido">Probabilidad de que se haga un pedido</label>
+          <div class="col-md-auto">
+            <input type="number" class="form-control" id="txtProbPedido" name="txtProbPedido" value="0.5"/>
+          </div>
+        </div>
+
+        <br>
+
+        <h4>Eventos:</h4>
+        <ul>
+          <li class="my-3">
+            <div class="form-group row">
+              <div class="col-md-5 col-form-label"><b>Llegada de cliente (Distribución Exponencial Negativa):</b></div>
+              <label class="col-md-auto col-form-label" for="txtMediaLlegadaClientes">Media (µ)</label>
+              <div class="col-md-auto">
+                <input
+                type="number"
+                class="form-control"
+                id="txtMediaLlegadaClientes"
+                name="txtMediaLlegadaClientes"
+                value="15"
+                />
+              </div>
+            </div>
+          </li>
+
+          <li class="my-3">
+            <div class="form-group row">
+              <div class="col-md-5 col-form-label"><b>Fin atención de cliente (Distribución Uniforme):</b></div>
+              <label class="col-md-auto col-form-label" for="txtTiempoAtencionClienteA">A</label>
+              <div class="col-md-auto">
+                <input
+                type="number"
+                class="form-control"
+                id="txtTiempoAtencionClienteA"
+                name="txtTiempoAtencionClienteA"
+                value="2"
+                />
+              </div>
+
+              <label class="col-md-auto col-form-label" for="txtTiempoAtencionClienteB">B</label>
+              <div class="col-md-auto">
+                <input
+                type="number"
+                class="form-control"
+                id="txtTiempoAtencionClienteB"
+                name="txtTiempoAtencionClienteB"
+                value="4"
+                />
+              </div>
+            </div>
+          </li>
+
+          <li class="my-3">
+            <div class="form-group row">
+              <div class="col-md-5 col-form-label"><b>Fin reparación de zapatos (Distribución Uniforme):</b></div>
+              <label class="col-md-auto col-form-label" for="txtTiempoReparacionZapatosA">A</label>
+              <div class="col-md-auto">
+                <input
+                type="number"
+                class="form-control"
+                id="txtTiempoReparacionZapatosA"
+                name="txtTiempoReparacionZapatosA"
+                value="7"
+                />
+              </div>
+
+              <label class="col-md-auto col-form-label" for="txtTiempoReparacionZapatosB">B</label>
+              <div class="col-md-auto">
+                <input
+                type="number"
+                class="form-control"
+                id="txtTiempoReparacionZapatosB"
+                name="txtTiempoReparacionZapatosB"
+                value="23"
+                />
+              </div>
+            </div>
+          </li>
+
+        </ul>
+
+        <br>
+        
+        <div class="row mb-3 mx-3">
+          <button class="btn btn-dark mb-2 mx-2 form-control form-control-md"
+              id="btnSimular"
+              type="button"
+              name="btnSimular">
+              Simular
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div id="divTablaSimulacion">
+      <div class="table-responsive scrollable row my-3 mx-3">
+        <table id="tablaSimulacion" class="table table-hover table-bordered mx-3 my-3">
+          <thead>
+            <tr>
+              <th rowspan="2">N° Evento</th>
+              <th rowspan="2">Evento</th>
+              <th rowspan="2">Día</th>
+              <th rowspan="2">Reloj (minutos)</th>
+              <th rowspan="2">Reloj (hh:mm:ss)</th>
+              <th colspan="3">Llegada Cliente</th>
+              <th colspan="5">Fin atención cliente</th>
+              <th colspan="4">Fin reparación par zapatos</th>
+              <th colspan="6">Zapatero</th>
+              <th colspan="7">Métricas</th>
+            </tr>
+          
+            </tr>          
+              <!-- Llegada cliente -->
+              <th>RND</th>
+              <th>Tiempo Entre Llegadas</th>
+              <th style="color: red">Próxima Llegada</th>
+
+              <!-- Fin atención cliente -->
+              <th>RND</th>
+              <th>Objetivo Visita</th>
+              <th>RND</th>
+              <th>Tiempo Atención</th>
+              <th style="color: red">Fin Atención</th>
+
+              <!-- Fin reparación par zapatos -->
+              <th>RND</th>
+              <th>Tiempo Reparación</th>
+              <th>Tiempo Secado</th>
+              <th style="color: red">Fin Reparación</th>
+
+              <!-- Zapatero -->
+              <th>Estado</th>
+              <th>¿Está Recibiendo Pedidos?</th>
+              <th>Cola Clientes</th>
+              <th>Tiempo Remanente Reparación</th>
+              <th>Cola Zapatos a Reparar</th>
+              <th>Cola Zapatos Listos</th>
+
+              <!-- Métricas -->
+              <th>Acumulador Tiempo Reparación</th>
+              <th>Cantidad Zapatos Reparados</th>
+              <th>Cantidad Máxima de Zapatos en Cola de Reparación</th>
+              <th>Acumulador Tiempo Atención de Clientes</th>
+              <th>Cantidad Clientes Atendidos</th>
+              <th>Cantidad Clientes Rechazados</th>
+              <th>Cantidad Máxima de Clientes en Cola</th>
+            </tr>
+          </thead>
+
+          <tbody>
+          </tbody>
+
+        </table>
+      </div>
+
+      <div class="mb-3 mx-3 row justify-content-center text-center">
+        <div class="col-md-auto  alert alert-info mx-2" role="alert" id="alertTiempoPromedioReparacion"></div>
+        <div class="col-md-auto alert alert-info mx-2" role="alert" id="alertCantMaxColaZapatos"></div>
+        <div class="col-md-auto alert alert-info mx-2" role="alert" id="alertTiempoPromedioAtencionClientes"></div>
+        <div class="col-md-auto alert alert-info mx-2" role="alert" id="alertPorcentajeClientesRechazados"></div>
+        <div class="col-md-auto alert alert-info mx-2" role="alert" id="alertCantMaxColaClientes"></div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row mb-3 mx-3">
+        <button class="btn btn-dark mb-2 mx-2 form-control form-control-md"
+          id="btnRK"
+          type="button"
+          name="btnRK">
+          Mostrar Runge-Kutta
+        </button>
+      </div>
+
+      <div id="divRungeKutta">
+      </div>
+    </div>
+
+  </body>
+</html>

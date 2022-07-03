@@ -1,0 +1,33 @@
+h1, h2 {
+  font-family: Lato;
+}
+
+body {
+  background-color: burlywood;
+}
+
+.tamanio{
+  height: 36px;
+}
+
+.scrollable {
+  height: 35rem;
+  overflow: scroll;
+}
+
+.table th {
+  text-align: center;
+}
+
+
+#tablaSimulacion thead tr {
+  top: 0;
+  position: sticky;
+  background-color: burlywood;
+}
+
+#divRungeKutta thead tr {
+  top: 0;
+  position: sticky;
+  background-color: burlywood;
+}
