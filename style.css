@@ -17,9 +17,19 @@
   overflow: scroll;
 }
 
-thead tr {
+.candidato {
+  color: crimson;
+}
+
+.table > :not(:first-child) {
+  border-top: 0;
+}
+
+thead tr, thead th {
   text-align: center;
   height: 3rem;
+  border: 0; 
+  outline: thin solid black;
 }
 
 thead tr:nth-child(1) th {
@@ -33,3 +43,26 @@ thead tr:nth-child(2) th {
   position: sticky;
   top: 3rem;
 }
+
+/*
+table {
+  border-collapse: separate;
+}
+
+
+table th {
+  border-top: thick solid black;
+  border-bottom: thick solid black;
+  border-right: thick solid black;
+}
+
+table th:first-child {
+  border-left: thick solid black;
+}
+*/
+
+/*
+table thead {
+  border: thin solid black;
+}
+*/

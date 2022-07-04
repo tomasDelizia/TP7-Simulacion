@@ -66,7 +66,7 @@ export module HTMLUtils {
   function crearCeldaHTML(valorCelda: string, correspondeColor: boolean): string {
     let celdaHTML: string = "<td";
     // Pintamos la celda si corresponde.
-    if (correspondeColor) celdaHTML += ' style="color: red"';
+    if (correspondeColor) celdaHTML += ' class="candidato"';
     celdaHTML += ">";
     let celda: string = !(typeof valorCelda === 'undefined' || valorCelda == 'null' || Number(valorCelda) === -1 || valorCelda === '') ? valorCelda : '-';
     celdaHTML += celda + "</td>";
