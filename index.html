@@ -4,16 +4,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TP7 Simulación</title>
-    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.css"/>
     <div id="app"></div>
   </head>
 
-  <body>
-    <h1 class="text-center">Trabajo Práctico N°7 de Simulación: Zapatería</h1>
+  <body class="background-300">
+    <div class="container-fluid primary-dark">
+      <h1 class="text-center">Trabajo Práctico N°7 de Simulación: Zapatería</h1>
+      <hr>
+    </div>
 
-    <hr>
-
-    <div class="container">
+    <div class="container primary p-3 rounded">
       <form>
         <h2>Parámetros:</h2>
 
@@ -117,17 +117,20 @@
 
         </ul>
 
-        <br>
-        
-        <div class="row mb-3 mx-3">
-          <button class="btn btn-dark mb-2 mx-2 form-control form-control-md"
-              id="btnSimular"
-              type="button"
-              name="btnSimular">
-              Simular
-          </button>
-        </div>
       </form>
+    </div>
+
+    <br>
+
+    <div class="container">
+      <div class="row mb-3 mx-3">
+        <button class="btn btn-lg primary mb-2 mx-2 form-control form-control-md"
+            id="btnSimular"
+            type="button"
+            name="btnSimular">
+            Simular
+        </button>
+      </div>
     </div>
 
     <div id="divTablaSimulacion">
@@ -202,7 +205,7 @@
 
     <div class="container">
       <div class="row mb-3 mx-3">
-        <button class="btn btn-dark mb-2 mx-2 form-control form-control-md"
+        <button class="btn btn-lg primary mb-2 mx-2 form-control form-control-md"
           id="btnRK"
           type="button"
           name="btnRK">

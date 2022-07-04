@@ -1,9 +1,19 @@
-body {
-  background-color: burlywood;
+@import '~bootstrap/dist/css/bootstrap.min.css';
+
+.background-300 {
+  background-color: #f4f4f4;
 }
 
-.tamanio{
-  height: 36px;
+tr {
+  background-color: #575959;
+}
+
+.primary {
+  background-color: #80deea;
+}
+
+.primary-dark {
+  background-color: #4bacb8;
 }
 
 .scrollable {
@@ -11,19 +21,8 @@ body {
   overflow: scroll;
 }
 
-.table th {
+table thead tr {
   text-align: center;
-}
-
-
-#tablaSimulacion thead tr {
   top: 0;
   position: sticky;
-  background-color: burlywood;
-}
-
-#divRungeKutta thead tr {
-  top: 0;
-  position: sticky;
-  background-color: burlywood;
 }
