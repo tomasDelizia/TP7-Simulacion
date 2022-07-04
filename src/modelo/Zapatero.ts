@@ -145,8 +145,7 @@ export class Zapatero {
 
   // Cálculo del tiempo entre llegadas, que tiene distribución exponencial.
   public getTiempoEntreLlegadas(rndLlegada: number): number {
-    let tiempo: number = Utils.getDistribucionExponencial(rndLlegada, this.mediaLlegadaClientes);
-    return tiempo;
+    return Utils.getDistribucionExponencial(rndLlegada, this.mediaLlegadaClientes);
   }
 
   // Obtención del objetivo de la visita del cliente, según la probabilidad asociada.
@@ -157,14 +156,12 @@ export class Zapatero {
 
   // Cálculo del tiempo de atención de cliente, que tiene distribución uniforme.
   public getTiempoAtencion(rndAtencion: number): number {
-    let tiempo: number = Utils.getDistribucionUniforme(rndAtencion, this.tiempoAtencionClienteA, this.tiempoAtencionClienteB);
-    return tiempo;
+    return Utils.getDistribucionUniforme(rndAtencion, this.tiempoAtencionClienteA, this.tiempoAtencionClienteB);
   }
 
   // Cálculo del tiempo de reparación, que tiene distribución uniforme.
   public getTiempoReparacion(rndReparacion: number): number {
-    let tiempo: number = Utils.getDistribucionUniforme(rndReparacion, this.tiempoReparacionZapatosA, this.tiempoReparacionZapatosB);
-    return tiempo;
+    return Utils.getDistribucionUniforme(rndReparacion, this.tiempoReparacionZapatosA, this.tiempoReparacionZapatosB);
   }
 
   public get estado(): string {
@@ -229,41 +226,17 @@ export class Zapatero {
 
   public get datosClientesEnSistema(): string[] {
     let datosClientesEnSistema: string[] = [];
-    if (this.hayClienteEnAtencion()) datosClientesEnSistema.push(
-      this.clienteEnAtencion.idCliente.toString(),
-      this.clienteEnAtencion.estado,
-      this.clienteEnAtencion.minutoLlegada.toFixed(2)
-      );
-    for (let i: number = 0; i < this.colaClientes.length; i++) datosClientesEnSistema.push(
-      this.colaClientes[i].idCliente.toString(),
-      this.colaClientes[i].estado,
-      this.colaClientes[i].minutoLlegada.toFixed(2)
-      );
+    if (this.hayClienteEnAtencion()) datosClientesEnSistema = datosClientesEnSistema.concat(this.clienteEnAtencion.datos);
+    for (let i: number = 0; i < this.colaClientes.length; i++) datosClientesEnSistema = datosClientesEnSistema.concat(this.colaClientes[i].datos);
     return datosClientesEnSistema;
   }
 
   public get datosParZapatosEnSistema(): string[] {
     let datosParZapatosEnSistema: string[] = [];
-    for (let i: number = 0; i < this.colaZapatosListos.length; i++) datosParZapatosEnSistema.push(
-      this.colaZapatosListos[i].idPar.toString(),
-      this.colaZapatosListos[i].estado,
-      this.colaZapatosListos[i].minutoLlegada.toFixed(2)
-      );
-    if (this.hayZapatosEnReparacion()) datosParZapatosEnSistema.push(
-      this.parZapatosEnReparacion.idPar.toString(),
-      this.parZapatosEnReparacion.estado,
-      this.parZapatosEnReparacion.minutoLlegada.toFixed(2)
-      );
-    if (this.hayZapatosPausadosEnReparacion()) datosParZapatosEnSistema.push(
-      this.parZapatosPausadosEnReparacion.idPar.toString(),
-      this.parZapatosPausadosEnReparacion.estado,
-      this.parZapatosPausadosEnReparacion.minutoLlegada.toFixed(2)
-      );
-    for (let i: number = 0; i < this.colaZapatosAReparar.length; i++) datosParZapatosEnSistema.push(
-      this.colaZapatosAReparar[i].idPar.toString(),
-      this.colaZapatosAReparar[i].estado,
-      this.colaZapatosAReparar[i].minutoLlegada.toFixed(2)
-      );
+    for (let i: number = 0; i < this.colaZapatosListos.length; i++) datosParZapatosEnSistema = datosParZapatosEnSistema.concat(this.colaZapatosListos[i].datos);
+    if (this.hayZapatosEnReparacion()) datosParZapatosEnSistema = datosParZapatosEnSistema.concat(this.parZapatosEnReparacion.datos);
+    if (this.hayZapatosPausadosEnReparacion()) datosParZapatosEnSistema = datosParZapatosEnSistema.concat(this.parZapatosPausadosEnReparacion.datos);
+    for (let i: number = 0; i < this.colaZapatosAReparar.length; i++) datosParZapatosEnSistema = datosParZapatosEnSistema.concat(this.colaZapatosAReparar[i].datos);
     return datosParZapatosEnSistema;
   }
 
@@ -302,11 +275,31 @@ export class Zapatero {
     this._estado = EstadoZapatero.ATENDIENDO;
   }
 
-  public recibirNuevoCliente(reloj: number): void {
-    // Generamos la llegada del próximo cliente.
+  // Generamos la llegada del próximo cliente.
+  public generarProximaLlegada(reloj: number): void {
     this.rndLlegada = Math.random();
     this.tiempoEntreLlegadas = this.getTiempoEntreLlegadas(this.rndLlegada);
     this.proximaLlegada = reloj + this.tiempoEntreLlegadas;
+  }
+
+  // Generamos el tiempo de atención.
+  public generarFinAtencion(reloj: number): void {
+    this.rndAtencion = Math.random();
+    this.tiempoAtencion = this.getTiempoAtencion(this.rndAtencion);
+    this.finAtencion = reloj + this.tiempoAtencion;
+  }
+
+  // Calculamos el tiempo de reparación.
+  public generarFinReparacion(reloj: number): void {
+    this.rndReparacion = Math.random();
+    this.tiempoReparacion = this.getTiempoReparacion(this.rndReparacion);
+    this.tiempoSecado = this.tiempoSecadoRK;
+    this.finReparacion = reloj + this.tiempoReparacion + this.tiempoSecado;
+  }
+
+  // Método para recibir una llegada de un cliente nuevo al sistema.
+  public recibirNuevoCliente(reloj: number): void {
+    this.generarProximaLlegada(reloj);
     
     // Obtenemos el objetivo de la visita.
     this.rndObjetivoVisita = Math.random();
@@ -329,10 +322,7 @@ export class Zapatero {
           nuevoCliente.retirandoZapatos();
           this.atendiendo();
 
-          // Generamos el tiempo de atención.
-          this.rndAtencion = Math.random();
-          this.tiempoAtencion = this.getTiempoAtencion(this.rndAtencion);
-          this.finAtencion = reloj + this.tiempoAtencion;
+          this.generarFinAtencion(reloj);
         }
         // Si estaba atendiendo otro cliente, va a la cola.
         else {
@@ -352,10 +342,7 @@ export class Zapatero {
           nuevoCliente.haciendoPedido();
           this.atendiendo();
 
-          // Generamos el tiempo de atención.
-          this.rndAtencion = Math.random();
-          this.tiempoAtencion = this.getTiempoAtencion(this.rndAtencion);
-          this.finAtencion = reloj + this.tiempoAtencion;
+          this.generarFinAtencion(reloj);
         }
         // Si estaba atendiendo otro cliente, va a la cola.
         else if (this.estaAtendiendo() && this.estaRecibiendoPedidos()) {
@@ -395,10 +382,7 @@ export class Zapatero {
 
     // Preguntamos si hay nadie en la cola para atender.
     if (this.hayClientesParaAtender()) {
-      // Generamos el tiempo de atención.
-      this.rndAtencion = Math.random();
-      this.tiempoAtencion = this.getTiempoAtencion(this.rndAtencion);
-      this.finAtencion = reloj + this.tiempoAtencion;
+      this.generarFinAtencion(reloj);
 
       // El zapatero pasa de ocupado a ocupado.
       this.atendiendo();
@@ -447,7 +431,6 @@ export class Zapatero {
   public recibirParZapatos(reloj: number): void {
     this.cantZapatosIngresadosAlSistema++;
     let nuevoParZapatos: ParZapatos = new ParZapatos(this.cantZapatosIngresadosAlSistema, reloj);
-    console.log(nuevoParZapatos)
     nuevoParZapatos.esperandoReparacion();
     this.colaZapatosAReparar.push(nuevoParZapatos);
   }
@@ -458,11 +441,7 @@ export class Zapatero {
     this.reparando();
     this.parZapatosEnReparacion.enReparacion();
     
-    // Calculamos el tiempo de reparación.
-    this.rndReparacion = Math.random();
-    this.tiempoReparacion = this.getTiempoReparacion(this.rndReparacion);
-    this.tiempoSecado = this.tiempoSecadoRK;
-    this.finReparacion = reloj + this.tiempoReparacion + this.tiempoSecado;
+    this.generarFinReparacion(reloj);
   }
 
   public reparando(): void {

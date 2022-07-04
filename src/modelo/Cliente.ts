@@ -57,4 +57,8 @@ export class Cliente {
   public get minutoLlegada(): number {
     return this._minutoLlegada;
   }
+
+  public get datos(): string[] {
+    return [this._idCliente.toString(), this.estado, this._minutoLlegada.toFixed(2)];
+  }
 }
