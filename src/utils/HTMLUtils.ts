@@ -91,15 +91,12 @@ export module HTMLUtils {
     let subEncabezados: HTMLTableRowElement = tabla.rows[1];
 
     for (let i: number = 0; i < cantidad; i++) {
-      let col: HTMLTableHeaderCellElement = encabezados.insertCell();
-      col.colSpan = columnas.length;
-      col.style.fontWeight = "bold";
-      col.appendChild(document.createTextNode(tipo + ' N° ' + (i+1)));
+      let columna: string = `<th colspan="${columnas.length}">${tipo} N° ${i+1}</th>`;
+      encabezados.innerHTML += columna;
 
       for (let j: number = 0; j < columnas.length; j++) {
-        let subCol: HTMLTableHeaderCellElement = subEncabezados.insertCell();
-        subCol.style.fontWeight = "bold";
-        subCol.appendChild(document.createTextNode(columnas[j]));
+        let subColumna: string = `<th>${columnas[j]}</th>`;
+        subEncabezados.innerHTML += subColumna;
       }
     }
   }

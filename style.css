@@ -17,9 +17,19 @@
   overflow: scroll;
 }
 
-table thead tr {
-  background-color: #b4ffff;
+thead tr {
   text-align: center;
-  top: 0;
+  height: 3rem;
+}
+
+thead tr:nth-child(1) th {
+  background-color: #b4ffff;
   position: sticky;
+  top: 0;
+}
+
+thead tr:nth-child(2) th {
+  background-color: #b4ffff;
+  position: sticky;
+  top: 3rem;
 }
