@@ -314,8 +314,8 @@ export class Zapatero {
     switch (this.objetivoVisita) {
       // Llega un cliente que quiere retirar un par de zapatos reparados.
       case "Retirar": {
-        // Preguntamos si el zapatero puede atender (está libre o reparando).
-        if (this.estaParaAtender()) {
+        // Preguntamos si el zapatero puede atender (está libre o reparando) y si hay zapatos para retirar.
+        if (this.estaParaAtender() && this.hayZapatosParaRetirar()) {
           // Si estaba reparando, deja la reparación pendiente y atiende al cliente.
           if (this.estaReparando()) this.pausarReparacion(reloj);
           this.clienteEnAtencion = nuevoCliente;
@@ -324,6 +324,8 @@ export class Zapatero {
 
           this.generarFinAtencion(reloj);
         }
+        // No hay zapatos para retirar, se rechaza el cliente.
+        else if (!this.hayZapatosParaRetirar()) this.cantClientesRechazados++;
         // Si estaba atendiendo otro cliente, va a la cola.
         else {
           nuevoCliente.enEsperaRetiro();
@@ -365,47 +367,59 @@ export class Zapatero {
     this.acumuladorTiempoAtencion += reloj - clienteAtendido.minutoLlegada;
 
     // El cliente siendo atendido estaba retirando un par de zapatos.
-    if (clienteAtendido.estaRetirandoZapatos()) {
-      // Preguntamos si había zapatos listos para retirar.
-      if (this.hayZapatosParaRetirar()) this.colaZapatosListos.shift();
-      // No había zapatos listos, se rechaza el cliente.
-      else {
-        this.cantClientesAtendidos--;
-        this.cantClientesRechazados++;
-      }
-    }
+    if (clienteAtendido.estaRetirandoZapatos()) this.colaZapatosListos.shift();
     // El cliente siendo atendido estaba haciendo un pedido de reparación.
     else this.recibirParZapatos(reloj);
 
     // Eliminamos al cliente atendido del sistema.
     this.clienteEnAtencion = null;
 
-    // Preguntamos si hay nadie en la cola para atender.
-    if (this.hayClientesParaAtender()) {
-      this.generarFinAtencion(reloj);
+    // Iteramos hasta poder atender a un cliente.
+    while (true) {
+      // Preguntamos si hay nadie en la cola para atender.
+      if (this.hayClientesParaAtender()) {
+        // Quitamos un cliente de la cola y cambiamos su estado, según su estado actual.
+        let clientePorAtender: Cliente = this.colaClientes.shift();
 
-      // El zapatero pasa de ocupado a ocupado.
-      this.atendiendo();
+        // El cliente estaba esperando retirar un par de zapatos.
+        if (clientePorAtender.estaEsperandoRetirarPedido()) {
+          // Preguntamos si hay zapatos para retirar.
+          if (this.hayZapatosParaRetirar()) {
+            clientePorAtender.retirandoZapatos();
+            this.clienteEnAtencion = clientePorAtender;
+            this.generarFinAtencion(reloj);
 
-      // Quitamos un cliente de la cola y cambiamos su estado, según su estado actual.
-      let clientePorAtender: Cliente = this.colaClientes.shift();
-      this.clienteEnAtencion = clientePorAtender;
+            // El zapatero pasa de ocupado a ocupado.
+            this.atendiendo();
+            break;
+          }
+          // No hay zapatos para retirar, se rechaza el cliente.
+          else this.cantClientesRechazados++;
+        }
+        // El cliente estaba esperando hacer un pedido de zapatos.
+        else {
+          clientePorAtender.haciendoPedido();
+          this.clienteEnAtencion = clientePorAtender;
+          this.generarFinAtencion(reloj);
 
-      // El cliente estaba esperando retirar un par de zapatos.
-      if (clientePorAtender.estaEsperandoRetirarPedido()) clientePorAtender.retirandoZapatos();
-      // El cliente estaba esperando hacer un pedido de zapatos.
-      else clientePorAtender.haciendoPedido();
-    }
-    // No hay nadie en la cola.
-    else {
-      // Verificamos si había un par de zapatos siendo reparado antes de que llegara el cliente.
-      if (this.hayZapatosPausadosEnReparacion()) this.reanudarReparacion(reloj);
+          // El zapatero pasa de ocupado a ocupado.
+          this.atendiendo();
+          break;
+        }
+      }
+      // No hay nadie en la cola.
       else {
-        // Si no, preguntamos si hay zapatos por reparar.
-        if (this.hayZapatosParaReparar()) this.repararParZapatos(reloj);
-        else this.liberar();
+        // Verificamos si había un par de zapatos siendo reparado antes de que llegara el cliente.
+        if (this.hayZapatosPausadosEnReparacion()) this.reanudarReparacion(reloj);
+        else {
+          // Si no, preguntamos si hay zapatos por reparar.
+          if (this.hayZapatosParaReparar()) this.repararParZapatos(reloj);
+          else this.liberar();
+        }
+        break;
       }
     }
+    
   }
 
 
